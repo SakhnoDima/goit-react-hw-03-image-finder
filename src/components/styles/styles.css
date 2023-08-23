@@ -89,3 +89,7 @@ img {
 .Button:focus {
   background-color: #303f9f;
 }
+
+.Spinner {
+  margin: 0 auto;
+}
