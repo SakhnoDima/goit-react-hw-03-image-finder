@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import './Modal.css';
 
 export class Modal extends Component {
   componentDidMount() {
@@ -10,21 +11,21 @@ export class Modal extends Component {
   handleKeyDown = event => {
     // закрив по Escspe
     if (event.code === 'Escape') {
-      this.props.onCloses();
+      this.props.onClick();
     }
   };
   handleBackDropClick = event => {
     // закрив по бекдроп
     if (event.target === event.currentTarget) {
-      this.props.onCloses();
+      this.props.onClick();
     }
   };
   render() {
     return (
-      <div className="overlay">
+      <div className="Overlay" onClick={this.handleBackDropClick}>
         MODAL
-        <div className="modal">
-          <img src="" alt="" />
+        <div className="Modal">
+          <img src={this.props.icon} alt="" />
         </div>
       </div>
     );

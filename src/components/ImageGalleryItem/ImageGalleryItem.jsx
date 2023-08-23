@@ -3,7 +3,8 @@ import './ImageGalleryItem.css';
 
 export class ImageGalleryItem extends Component {
   handleOnclick = event => {
-    return this.props.onClick(event.target.src);
+    const url = event.target.src;
+    return this.props.onClick(url);
   };
   render() {
     return (

@@ -12,7 +12,9 @@ export class App extends Component {
     page: 1,
     pictureList: null,
     loading: false,
+    icon: '',
     modalShow: false,
+    totalHits: null,
   };
   async componentDidUpdate(_, prevState) {
     const prevPicture = prevState.picture;
@@ -34,7 +36,8 @@ export class App extends Component {
             );
           })
           .then(pictureList => {
-            const { hits } = pictureList;
+            const { hits, totalHits } = pictureList;
+            this.setState({ totalHits });
             this.setState({ pictureList: [...hits] });
             const { total } = pictureList;
             if (total === 0) {
@@ -49,6 +52,7 @@ export class App extends Component {
       }
     }
     if (prevPage !== nextPage) {
+      this.lastPage();
       try {
         this.setState({ loading: true });
         fetch(
@@ -81,29 +85,34 @@ export class App extends Component {
   handleOnclick = () => {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
-  handleModalToggle = url => {
+  handlGetIcon = url => {
     this.setState(prevState => ({ modalShow: !prevState.modalShow }));
-    console.log(url);
-    return url;
+    this.setState({ icon: url });
+  };
+  handleToggleModalShow = () => {
+    this.setState(prevState => ({ modalShow: !prevState.modalShow }));
+  };
+  lastPage = () => {
+    const { totalHits, page } = this.state;
+    if (page * 12 > totalHits) toast.error('Its last page');
   };
   render() {
-    const { pictureList, loading } = this.state;
+    const { pictureList, loading, modalShow, totalHits, page } = this.state;
 
     return (
       <div className="App">
         <Searchbar onSubmitGetPicture={this.handleFormGetPicture} />
-        <ImageGallery
-          pictureList={pictureList}
-          onClick={this.handleModalToggle}
-        />
+        <ImageGallery pictureList={pictureList} onClick={this.handlGetIcon} />
         <Loader visible={loading} />
         <ToastContainer autoClose={3000} />
-        {pictureList && (
+        {page * 12 < totalHits && (
           <button className="Button" type="button" onClick={this.handleOnclick}>
             Load more
           </button>
         )}
-        <Modal onClose={this.handleModalToggle} />
+        {modalShow && (
+          <Modal onClick={this.handleToggleModalShow} icon={this.state.icon} />
+        )}
       </div>
     );
   }
