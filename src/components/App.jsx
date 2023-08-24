@@ -34,20 +34,19 @@ export class App extends Component {
           nextPicture,
           this.state.page
         );
-
-        this.setState(prevState => ({
-          totalHits,
-          pictureList:
-            this.state.page > 1 ? [...prevState.pictureList, ...hits] : hits,
-        }));
-        // перевірка лише на одну сторінку
-        if (this.state.page * 12 > totalHits && total !== 0)
-          toast.error('Its last page');
-        // перевірка знайшли щось чи ні
         if (total === 0) {
           this.setState({ pictureList: null });
           return toast.error('Image not found');
         }
+        this.setState(prevState => ({
+          totalHits,
+          pictureList: [...prevState.pictureList, ...hits],
+        }));
+        // перевірка лише на одну сторінку
+
+        if (this.state.page * 12 > totalHits && total !== 0)
+          toast.error('Its last page');
+        // перевірка знайшли щось чи ні
       } catch (error) {
         toast.error('Sorry! We have some problem. Try again later! '); // помилка
         console.log(error.message);
@@ -57,7 +56,7 @@ export class App extends Component {
     }
   }
   handleFormGetPicture = picture => {
-    this.setState({ picture, page: 1 });
+    this.setState({ picture, page: 1, pictureList: [] });
   };
   handleOnclick = () => {
     this.setState(prevState => ({ page: prevState.page + 1 }));
