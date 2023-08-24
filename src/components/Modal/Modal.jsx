@@ -1,7 +1,11 @@
 import { Component } from 'react';
 import './Modal.css';
+import { PropTypes } from 'prop-types';
 
 export class Modal extends Component {
+  static propTypes = {
+    onClick: PropTypes.func.isRequired,
+  };
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
   }
