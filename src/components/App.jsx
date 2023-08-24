@@ -27,17 +27,19 @@ export class App extends Component {
     const prevPage = prevState.page;
     const nextPage = this.state.page;
 
-    if (prevPicture !== nextPicture) {
+    if (prevPicture !== nextPicture || prevPage !== nextPage) {
       this.setState({ loading: true });
       try {
-        const response = await fetchArticlesWithQuery(
+        const { hits, totalHits, total } = await fetchArticlesWithQuery(
           nextPicture,
           this.state.page
         );
 
-        const { hits, totalHits, total } = response;
-        this.setState({ totalHits });
-        this.setState({ pictureList: [...hits] });
+        this.setState(prevState => ({
+          totalHits,
+          pictureList:
+            this.state.page > 1 ? [...prevState.pictureList, ...hits] : hits,
+        }));
         // перевірка лише на одну сторінку
         if (this.state.page * 12 > totalHits && total !== 0)
           toast.error('Its last page');
@@ -50,25 +52,6 @@ export class App extends Component {
         toast.error('Sorry! We have some problem. Try again later! '); // помилка
         console.log(error.message);
       } finally {
-        this.setState({ loading: false });
-      }
-    }
-    // змінюємо сторинку і довантажуємо по кліку
-    if (prevPage !== nextPage) {
-      try {
-        const response = await fetchArticlesWithQuery(
-          nextPicture,
-          this.state.page
-        );
-        const { hits } = response;
-        this.setState(prevState => ({
-          pictureList: [...prevState.pictureList, ...hits],
-        }));
-      } catch (error) {
-        toast.error('Sorry! We have some problem. Try again later! ');
-        console.log(error.message);
-      } finally {
-        this.lastPage();
         this.setState({ loading: false });
       }
     }

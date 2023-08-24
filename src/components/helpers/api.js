@@ -1,13 +1,26 @@
 import axios from 'axios';
 
-axios.defaults.baseURL = 'https://pixabay.com/api';
+const KEY = '38565810-29740f5778639307be3f3659c';
+const instance = axios.create({
+  params: {
+    per_page: 12,
+    image_type: 'photo',
+    orientation: 'horizontal',
+    key: KEY,
+  },
+  baseURL: 'https://pixabay.com/api',
+});
+//! для прикладу
+// axios.defaults.baseURL = 'https://pixabay.com/api';
+// axios.defaults.params = {
+//   key: '38565810-29740f5778639307be3f3659c',
+//   per_page: 12,
+//   image_type: 'photo',
+//   orientation: 'horizontal',
+// };
 
 export const fetchArticlesWithQuery = async (searchQuery, page) => {
-  const KAY = '38565810-29740f5778639307be3f3659c';
-
-  const response = await axios.get(
-    `/?q=${searchQuery}&page=${page}&key=${KAY}&image_type=photo&orientation=horizontal&per_page=12`
-  );
+  const response = await instance.get(`/?q=${searchQuery}&page=${page}`);
 
   return response.data;
 };
